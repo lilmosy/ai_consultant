@@ -24,3 +24,6 @@ env/
 *.log
 .ipynb_checkpoints/
 .pytest_cache/
+
+# 생성 산출물
+eval/output/
