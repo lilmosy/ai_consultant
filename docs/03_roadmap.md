@@ -1,17 +1,20 @@
 # 03. 로드맵
 
-## 현재 (v0.1 — 동작 데모)
+## 현재 (v0.2 — 동작 데모, 뉴스 포함)
 - [x] DART 정형(주요계정 JSON) + 비정형(사업보고서 원문 발췌) 소스 레이어
-- [x] 네이버 뉴스 소스 레이어 (관련성 필터 / 인증 없으면 graceful degrade)
+- [x] 네이버 뉴스 소스 레이어 (검색 API + 관련성 필터 / 인증 없으면 graceful degrade)
+- [x] **뉴스 원문 본문 파싱** — 네이버 뉴스 기사(`n.news.naver.com`)는 원문 페이지에서 본문 추출,
+      외부 매체는 스니펫 폴백 (검색 API가 스니펫만 주는 한계 보완)
 - [x] 8-에이전트 파이프라인 (Planner→…→Critic)
 - [x] 중간 산출물 + RUN_LOG(산출물/한계) 기록
 - [x] fact_pack.md / fact_pack.html 렌더
-- [x] 한화오션 end-to-end 런 성공
+- [x] 한화오션 end-to-end 런 성공 (DART+뉴스, verified 220+ claim)
 
 ## 다음 (Loop 1)
-- [ ] `NAVER_CLIENT_SECRET` 확보 → 뉴스 claim 활성화, **공시 vs 뉴스 전망 분리** 데모
+- [ ] 외부 매체 본문 파싱 품질 개선(readability류) — 현재 네이버 기사만 안정적
 - [ ] Gap Finder → Source Scout **재수집 루프** 실제 연결(현재 1-pass)
 - [ ] 분기·반기 보고서까지 확장(수주잔고 시계열)
+- [ ] 공시(fact) vs 뉴스(기대/전망) **명시적 충돌 표면화** 섹션 강화
 
 ## 그다음 (Loop 2)
 - [ ] 경쟁사(HD현대중공업 00164742 / 삼성중공업) 동일 파이프라인 → **경쟁사 비교 fact pack** (가이드 시나리오 3)

@@ -4,11 +4,16 @@ Official endpoint: https://openapi.naver.com/v1/search/news.json
 Auth headers: X-Naver-Client-Id / X-Naver-Client-Secret  (BOTH required).
 
 Flow: query -> JSON items -> HTML-tag/entity clean -> relevance filter (company must appear,
-at least one topic term appears) -> deduped, date-parsed passages ready for claim extraction.
+at least one topic term appears) -> deduped, date-parsed items.
+
+검색 API는 title/description 스니펫만 준다. 실제 근거(claim)를 뽑으려면 기사 원문이 필요하므로,
+네이버 뉴스로 제공된 기사(n.news.naver.com)는 원문 페이지를 직접 받아 본문을 파싱한다
+(`#dic_area` 등). 원문 파싱이 신뢰 불가한 외부 매체는 스니펫으로 안전하게 폴백한다.
 """
 from __future__ import annotations
 import html
 import re
+from concurrent.futures import ThreadPoolExecutor
 from dataclasses import dataclass, field
 from datetime import datetime, timezone
 from typing import Optional
@@ -18,6 +23,10 @@ import requests
 from .. import config
 
 ENDPOINT = "https://openapi.naver.com/v1/search/news.json"
+_BROWSER_UA = {"User-Agent": ("Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) "
+                              "AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120 Safari/537.36")}
+# 네이버 뉴스 본문 컨테이너 후보
+_ARTICLE_SELECTORS = ["#dic_area", "#articleBodyContents", "#newsct_article article", "#newsEndContents"]
 
 
 @dataclass
@@ -29,10 +38,43 @@ class NewsItem:
     pub_date: str          # ISO YYYY-MM-DD
     query: str
     matched_terms: list[str] = field(default_factory=list)
+    body: str = ""             # 원문 파싱 성공 시 기사 본문
+    body_source: str = "snippet"  # naver_article | snippet
 
     @property
     def passage(self) -> str:
+        # 본문 파싱에 성공하면 제목+본문, 아니면 제목+스니펫
+        if self.body:
+            return f"{self.title}. {self.body}"
         return f"{self.title}. {self.description}"
+
+
+def fetch_article_body(url: str, timeout: int = 10, max_chars: int = 6000) -> Optional[str]:
+    """네이버 뉴스 기사(n.news.naver.com)의 본문을 파싱해 반환. 실패/저품질이면 None.
+
+    외부 매체(원문 링크)는 사이트별 구조가 제각각이라 nav/footer 잡음이 섞이므로 시도하지 않는다.
+    """
+    if "n.news.naver.com" not in url and "news.naver.com" not in url:
+        return None
+    try:
+        from bs4 import BeautifulSoup
+        r = requests.get(url, headers=_BROWSER_UA, timeout=timeout)
+        r.raise_for_status()
+        r.encoding = r.apparent_encoding or r.encoding
+    except Exception:
+        return None
+    soup = BeautifulSoup(r.text, "html.parser")
+    for t in soup(["script", "style", "noscript"]):
+        t.decompose()
+    node = None
+    for sel in _ARTICLE_SELECTORS:
+        node = soup.select_one(sel)
+        if node:
+            break
+    if not node:
+        return None
+    text = re.sub(r"\s+", " ", node.get_text(" ", strip=True)).strip()
+    return text[:max_chars] if len(text) >= 200 else None
 
 
 class NaverNewsClient:
@@ -79,11 +121,13 @@ def _parse_date(rfc822: str) -> str:
 
 def collect_news(company: str, topic_terms: list[str], queries: list[str],
                  client: NaverNewsClient | None = None,
-                 max_items: int = 30) -> tuple[list[NewsItem], dict]:
-    """Run each query, filter for relevance, dedupe. Returns (items, diagnostics)."""
+                 max_items: int = 30, fetch_bodies: bool = True,
+                 body_workers: int = 8) -> tuple[list[NewsItem], dict]:
+    """Run each query, filter for relevance, dedupe, then fetch full article bodies
+    for Naver-hosted articles. Returns (items, diagnostics)."""
     client = client or NaverNewsClient()
     diag = {"ready": client.ready, "queries": [], "errors": [], "raw_count": 0,
-            "kept_count": 0}
+            "kept_count": 0, "bodies_fetched": 0}
     if not client.ready:
         diag["errors"].append("Naver 인증정보 없음 — 뉴스 소스 비활성화")
         return [], diag
@@ -122,4 +166,16 @@ def collect_news(company: str, topic_terms: list[str], queries: list[str],
         if len(out) >= max_items:
             break
     diag["kept_count"] = len(out)
+
+    # 원문 본문 파싱 (네이버 뉴스 기사에 한해, 동시 실행)
+    if fetch_bodies and out:
+        def _grab(item: NewsItem):
+            body = fetch_article_body(item.link) or fetch_article_body(item.original_link)
+            if body:
+                item.body = body
+                item.body_source = "naver_article"
+            return item
+        with ThreadPoolExecutor(max_workers=body_workers) as ex:
+            list(ex.map(_grab, out))
+        diag["bodies_fetched"] = sum(1 for n in out if n.body_source == "naver_article")
     return out, diag

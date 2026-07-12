@@ -37,7 +37,8 @@
 
 - `dart.py` — 정형(`key_accounts`), 공시목록(`list_filings`,`latest_business_report`,
   `supply_contracts`), 비정형(`document_text` + `find_passages`). 온디스크 캐시.
-- `naver_news.py` — `collect_news`: 쿼리→관련성 필터(회사명+토픽어)→중복제거. 인증 없으면 graceful degrade.
+- `naver_news.py` — `collect_news`: 쿼리→관련성 필터(회사명+토픽어)→중복제거→**원문 본문 파싱**
+  (`fetch_article_body`, 네이버 뉴스 기사만; 외부매체는 스니펫 폴백). 인증 없으면 graceful degrade.
 
 ## 오케스트레이션 (`ai_consultant/pipeline.py`)
 
@@ -47,7 +48,7 @@
 
 ## 확장 지점 (다음 단계)
 
-1. **뉴스 활성화**: `NAVER_CLIENT_SECRET` 추가 → 뉴스 claim이 붙고 공시-뉴스 충돌/전망 분리 데모 가능.
+1. **뉴스 원문 파싱 확장**: 외부 매체까지 안정적 본문 추출(readability류) → 근거 깊이 향상.
 2. **경쟁사 비교**: HD현대중공업/삼성중공업 corp_code로 동일 파이프라인 → 동일 비교축 fact pack.
 3. **Gap→Scout 재수집 루프** 실제 연결(현재 1회전).
 4. **평가 하니스**: 가이드 §7의 Baseline A/B 대비 Citation Precision·Coverage·Hallucination 측정.

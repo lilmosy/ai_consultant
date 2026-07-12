@@ -109,15 +109,20 @@ def run(cfg: RunConfig, out_base: str = "outputs") -> dict:
     for k, n in enumerate(news_items):
         sources.append(SourceDoc(
             source_id=f"NEWS_{k}", source_type="News", source_name=f"네이버뉴스: {n.title[:40]}",
-            source_date=n.pub_date, url=n.original_link or n.link, text=n.passage,
-            meta={"query": n.query, "matched": n.matched_terms}))
+            source_date=n.pub_date, url=n.link or n.original_link, text=n.passage,
+            meta={"query": n.query, "matched": n.matched_terms,
+                  "body_source": n.body_source, "body_chars": len(n.body)}))
 
     n_dart = sum(1 for s in sources if s.source_type == "DART")
     n_news = sum(1 for s in sources if s.source_type == "News")
     art.write_json("03_sources.json", sources)
+    bodies = news_diag.get("bodies_fetched", 0)
     news_limit = "" if news_diag.get("ready") else "네이버 뉴스 인증정보(CLIENT_SECRET) 없음 → 뉴스 소스 0건"
+    if news_diag.get("ready") and n_news and bodies < n_news:
+        news_limit = (news_limit + "; " if news_limit else "") + \
+            f"뉴스 {n_news}건 중 {n_news - bodies}건은 외부매체라 원문파싱 불가→스니펫 사용"
     art.stage("Source Acquisition (DART 정형+비정형 / News)",
-              f"소스 {len(sources)}건 (DART {n_dart} / News {n_news}), 정형 재무 {len(fin_struct)}계정",
+              f"소스 {len(sources)}건 (DART {n_dart} / News {n_news}, 원문파싱 {bodies}건), 정형 재무 {len(fin_struct)}계정",
               "; ".join(x for x in [dart_limit, news_limit] if x) or
               "DART 원문은 키워드 앵커 주변 발췌만 사용(전체 문서 아님)")
 
