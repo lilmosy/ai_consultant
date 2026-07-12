@@ -1,9 +1,3 @@
-# 저장소 루트 .venv 에 이미 설치돼 있음. 독립 설치 시 아래.
-anthropic
-langchain-core        # dart_tools 의 @tool 데코레이터
-python-dotenv
-requests
-beautifulsoup4        # DART 기업코드 XML 파싱
-lxml                  # 사업보고서 XML 파싱
-pydantic              # 스키마
-openpyxl              # 엑셀 산출물
+anthropic>=0.40
+requests>=2.31
+python-dotenv>=1.0

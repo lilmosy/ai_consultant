@@ -1,42 +1,27 @@
-# 02 · 측정 계획 (Measurement Plan)
+# 02. 측정 — 단일 LLM 대비 무엇이 좋아지나
 
-"돌아가는 데모"에서 멈추지 않는다. 단일 LLM 대비 이 구조가 무엇을 개선하는지 **숫자로** 낸다.
+가이드 §7의 평가 골격을 이 데모에 매핑한다. 현재는 파이프라인이 자체 통계를 남기고,
+정식 평가 하니스는 다음 단계(로드맵)에서 붙인다.
 
-## 전략(정답)의 출처 — 라벨링 없이
-
-1. **회사 재분류표 (실전 정답):** 신구조 재작성 표 = 구부문↔신부문 정답 매핑. 라벨링 0.
-2. **합성 gold (엔진 회귀):** `fixtures.py`의 `NAVER_GOLD_EDGES` — 엔진이 이합을 제대로
-   푸는지 매 커밋 검증.
+## 비교군
+- **Baseline A**: LLM에게 바로 "한화오션 수주 전망 조사해줘".
+- **Baseline B**: DART/뉴스 문서를 넣고 단일 RAG 요약.
+- **Proposed**: 본 멀티에이전트(역할 분리 + 검증 루프).
 
 ## 지표
+| 지표 | 측정 방법 | 목표 |
+|---|---|---|
+| Citation Precision | source_span이 claim을 실제로 뒷받침하는 비율 | ≥ 80% |
+| Fact Accuracy | 숫자/날짜/계약이 원문과 일치하는지 샘플 검토 | Baseline 대비 오류율↓ |
+| Coverage | gold issue list 중 다룬 비율 | 핵심 이슈 ≥ 70% |
+| Hallucination Rate | 근거 없는 수치/계약/전망 비율 | Baseline 대비↓ |
+| Gap Quality | next check가 실제 추가 리서치에 유용한지 | 평균 4/5 이상 |
 
-| 지표 | 정의 | 정답 출처 | 목표 |
-|---|---|---|---|
-| **매핑 Precision/Recall/F1** | 구→신 edge 단위 정답 일치 | 재분류표 / 합성 gold | F1 ≥ 0.9 |
-| **이합 잔차** | \|from합 − to합\| / to합 | 계산(공짜) | auto-clear 밴드 ≤ 0.5% |
-| **orphan율** | 근거 span 없는 값 비중 | 원문 대조 | 0% |
-| **미해결율** | escalate 밴드 edge 비중 | — | 낮을수록 좋음(단 정직하게 노출) |
-| **시계열 복원율** | canonical 부문 × 연도 중 값이 채워진 비율 | — | 재편 관통 후에도 ≥ 목표 |
-| **추출 정확도** | 뽑은 숫자 = 원문 숫자 (샘플 대조) | 원문 | ≥ 0.95 |
+## 현재 런에서 자동 집계되는 프록시
+`RUN_LOG.md` / `fact_pack.md` 헤더에 매 실행마다:
+- `verified / weak / unsupported` claim 수 (Verifier 결과)
+- 총 claim 수, 소스 수(DART/News)
+- Verifier가 걸러낸 unsupported 수 = **근거 없는 주장 차단량**의 프록시
 
-## 베이스라인 대비 (이게 "진짜"를 만든다)
-
-- **Baseline A — 이름 완전일치만:** 개명·병합을 전혀 못 잡음. (`run_eval.py`에서 3/5)
-- **Baseline B — 단일 LLM에 "부문 시계열 정리해줘":** 재편 연도에서 값이 끊기거나 섞임,
-  근거 없음, 재현 불가.
-- **제안 — 이합 보존 매칭:** 5/5, 잔차 0, 근거 결착, 재현 가능.
-
-> 채점 한 문장: *"이름 완전일치 대비 개명·병합 2건을 추가 복원, 매핑 F1 1.0,
-> orphan율 0%, 재편을 관통한 연속 시계열."*
-
-## 현재 상태 (구현됨)
-
-- `eval/run_eval.py` → 합성 gold 채점 (Precision/Recall/F1 + naive 베이스라인 대비).
-- `tests/test_matcher.py` → 매칭·정합 회귀 (2020 커머스 = 비플+쇼핑 투영 검증).
-- 둘 다 API 없이 통과.
-
-## 다음 (미구현 — Loop 대상)
-
-- `reconcile/restatement.py`: 실제 재분류표 파싱 → 회사별 gold 자동 생성.
-- 실제 회사 N개(재편 2회 이상 겪은)로 매핑 Precision/Recall 표 산출.
-- 추출 정확도 샘플 대조 자동화.
+이 수치들이 Citation Precision·Hallucination Rate의 대리 지표다.
+정식 비교(Baseline A/B vs Proposed)는 `eval/`에 하니스로 추가 예정.

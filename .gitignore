@@ -1,29 +1,9 @@
-# Python
 __pycache__/
-*.py[cod]
-*.egg-info/
-.eggs/
-build/
-dist/
-
-# 가상환경
-.venv/
-venv/
-env/
-
-# 환경변수/비밀
+*.pyc
 .env
-.env.*
-
-# 에디터/OS
+.venv/
 .DS_Store
-.idea/
-.vscode/
-
-# 로그/캐시
+# Keep the curated demo run under outputs/, but ignore scratch logs and the large DART cache
+outputs/_scratch/
+outputs/_cache/
 *.log
-.ipynb_checkpoints/
-.pytest_cache/
-
-# 생성 산출물
-eval/output/
