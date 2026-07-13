@@ -23,6 +23,11 @@ BASE = "https://opendart.fss.or.kr/api"
 UA = {"User-Agent": "ai-consultant-research/0.1"}
 
 
+_PERIOD_RE = re.compile(r"\((\d{4})\.(\d{2})\)")
+# fnlttSinglAcnt reprt_code by report month
+_REPRT_BY_MONTH = {"03": "11013", "06": "11012", "09": "11014", "12": "11011"}
+
+
 @dataclass
 class Filing:
     corp_name: str
@@ -38,6 +43,34 @@ class Filing:
     @property
     def url(self) -> str:
         return f"https://dart.fss.or.kr/dsaf001/main.do?rcpNo={self.rcept_no}"
+
+    @property
+    def is_correction(self) -> bool:
+        return "정정" in self.report_nm
+
+    @property
+    def period(self) -> str:
+        """'2026.03' 형태 (report_nm의 (YYYY.MM))."""
+        m = _PERIOD_RE.search(self.report_nm)
+        return f"{m.group(1)}.{m.group(2)}" if m else ""
+
+    @property
+    def as_of_iso(self) -> str:
+        """보고 기준일(분기말/연말). 예: 2026.03 -> 2026-03-31."""
+        m = _PERIOD_RE.search(self.report_nm)
+        if not m:
+            return self.date_iso
+        y, mth = m.group(1), m.group(2)
+        last = {"03": "31", "06": "30", "09": "30", "12": "31"}.get(mth, "31")
+        return f"{y}-{mth}-{last}"
+
+    @property
+    def fin_params(self) -> tuple[str, str]:
+        """(bsns_year, reprt_code) for fnlttSinglAcnt."""
+        m = _PERIOD_RE.search(self.report_nm)
+        if not m:
+            return self.rcept_dt[:4], "11011"
+        return m.group(1), _REPRT_BY_MONTH.get(m.group(2), "11011")
 
 
 class DartClient:
@@ -115,16 +148,37 @@ class DartClient:
             return []
         return j.get("list", [])
 
-    def latest_business_report(self, corp_code: str, bgn: str, end: str) -> Optional[Filing]:
-        """Latest 사업보고서 by receipt date. A [기재정정] supersedes the original and is
-        typically the more complete document, so we take the most recent regardless of 정정."""
+    def _periodic_filings(self, corp_code: str, bgn: str, end: str) -> list[Filing]:
         rows = self.list_filings(corp_code, bgn, end, pblntf_ty="A")
-        biz = [x for x in rows if "사업보고서" in x["report_nm"]]
-        biz.sort(key=lambda x: x["rcept_dt"], reverse=True)
-        if not biz:
-            return None
-        x = biz[0]
-        return Filing(x["corp_name"].strip(), x["report_nm"].strip(), x["rcept_no"], x["rcept_dt"])
+        out = [Filing(x["corp_name"].strip(), x["report_nm"].strip(), x["rcept_no"], x["rcept_dt"])
+               for x in rows if any(k in x["report_nm"] for k in ("사업보고서", "반기보고서", "분기보고서"))]
+        out.sort(key=lambda f: f.rcept_dt, reverse=True)
+        return out
+
+    def latest_periodic_reports(self, corp_code: str, bgn: str, end: str,
+                                k: int = 2) -> list[Filing]:
+        """The k most recent periodic reports across DISTINCT periods.
+
+        Freshness first (분기/반기 포함). For each period we prefer the ORIGINAL filing over a
+        [기재정정] — corrections are often partial documents that omit the full body/tables.
+        This gives multiple timepoints (e.g. 2025.12 연간 + 2026.03 분기) for the Reconciler.
+        """
+        filings = self._periodic_filings(corp_code, bgn, end)
+        by_period: dict[str, Filing] = {}
+        for f in filings:
+            key = f.period or f.rcept_no
+            cur = by_period.get(key)
+            if cur is None:
+                by_period[key] = f
+            elif cur.is_correction and not f.is_correction:
+                by_period[key] = f  # prefer original
+        picked = sorted(by_period.values(), key=lambda f: f.as_of_iso, reverse=True)
+        return picked[:k]
+
+    def latest_business_report(self, corp_code: str, bgn: str, end: str) -> Optional[Filing]:
+        """Backwards-compatible: the single most recent periodic report."""
+        reps = self.latest_periodic_reports(corp_code, bgn, end, k=1)
+        return reps[0] if reps else None
 
     def supply_contracts(self, corp_code: str, bgn: str, end: str) -> list[Filing]:
         rows = self.list_filings(corp_code, bgn, end)
@@ -137,23 +191,34 @@ class DartClient:
 
     # ---------- 비정형: raw document ----------
     def document_text(self, rcept_no: str) -> str:
-        """Download document.xml(zip), decode (utf-8 -> cp949 fallback), strip tags to plaintext."""
+        """Download document.xml(zip), decode (utf-8 -> cp949 fallback), strip tags to plaintext.
+
+        A single filing's zip can hold MULTIPLE xml files (main document + attachments);
+        the main body is often not namelist()[0]. We read every .xml and concatenate,
+        main document (named `{rcept_no}.xml`) first, so the full report is covered.
+        """
         cache_file = self.cache / f"doc_{rcept_no}.txt" if self.cache else None
         if cache_file and cache_file.exists():
             return cache_file.read_text(encoding="utf-8")
         content = self._get("document.xml", {"rcept_no": rcept_no}, binary=True)
         z = zipfile.ZipFile(io.BytesIO(content))
-        raw = z.read(z.namelist()[0])
-        txt = None
-        for enc in ("utf-8", "cp949", "euc-kr"):
-            try:
-                txt = raw.decode(enc)
-                break
-            except Exception:
-                continue
-        if txt is None:
-            txt = raw.decode("utf-8", errors="replace")
-        plain = _to_plaintext(txt)
+        names = [n for n in z.namelist() if n.lower().endswith(".xml")] or z.namelist()
+        # main document first (exact `{rcept_no}.xml`), then the rest
+        names.sort(key=lambda n: (n != f"{rcept_no}.xml", n))
+        parts = []
+        for n in names:
+            raw = z.read(n)
+            txt = None
+            for enc in ("utf-8", "cp949", "euc-kr"):
+                try:
+                    txt = raw.decode(enc)
+                    break
+                except Exception:
+                    continue
+            if txt is None:
+                txt = raw.decode("utf-8", errors="replace")
+            parts.append(_to_plaintext(txt))
+        plain = "\n".join(parts)
         if cache_file:
             cache_file.write_text(plain, encoding="utf-8")
         return plain
@@ -161,11 +226,13 @@ class DartClient:
 
 # ----------------- passage helpers -----------------
 def _to_plaintext(xml_text: str) -> str:
-    # DART docs are SGML/XML-ish; drop tags, collapse whitespace, keep table cell spacing.
+    # DART docs are SGML/XML-ish; drop tags and collapse ALL whitespace to single spaces.
+    # Full collapse is important: table cells are emitted one-per-line, which "stretches"
+    # a table across thousands of chars and pushes data rows outside a keyword window.
+    # Compacting keeps the header keyword adjacent to its numeric rows.
     t = re.sub(r"<[^>]+>", " ", xml_text)
     t = t.replace("&nbsp;", " ").replace("&amp;", "&").replace("&lt;", "<").replace("&gt;", ">")
-    t = re.sub(r"[ \t]+", " ", t)
-    t = re.sub(r"\n\s*\n+", "\n", t)
+    t = re.sub(r"\s+", " ", t)
     return t.strip()
 
 

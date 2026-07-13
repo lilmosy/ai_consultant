@@ -27,6 +27,9 @@ USER_TMPL = """[회사] {company}
 [핵심 재무(정형, DART 주요계정)]
 {financials}
 
+[시점·소스 정합(Reconciler)] — 핵심 지표의 시점 흐름과 소스 간 충돌
+{reconciliation}
+
 [Evidence Gaps]
 {gaps}
 
@@ -35,15 +38,32 @@ USER_TMPL = """[회사] {company}
  "executive_summary": "- 결론 3~5개 (사실/전망 구분, 무엇이 비어있는지 포함)",
  "issue_tree_md": "| Issue | Hypothesis | Evidence Status |\\n|...| 표",
  "evidence_table_md": "| Claim | Type | Source | Span(축약) | Strength | View |\\n 표 (검증된 것 위주 12행 내외)",
- "order_backlog_md": "수주/수주잔고/계약 관련 표 또는 요약",
+ "timeline_md": "핵심 지표의 시점 흐름 표 (예: | 지표 | 2025-12-31 | 2026-03-31 | 최근 뉴스 | 추세 |). Reconciler 근거만 사용.",
+ "order_backlog_md": "수주/수주잔고/계약 관련 표 또는 요약 (가장 최신 시점 명시)",
  "strategic_outlook_md": "성장 동력과 제약 요인, 사실과 전망 분리",
  "risks_open_questions_md": "| Risk/Gap | Why it matters | Next check | 표",
  "next_research_agenda_md": "- 추가로 확인할 자료/검색어 목록"
 }}"""
 
 
+def _recon_blob(recon: dict) -> str:
+    if not recon:
+        return "(없음)"
+    lines = []
+    for t in recon.get("timelines", [])[:10]:
+        pts = " → ".join(f"{p.get('as_of','?')}:{p.get('value','?')}({p.get('source','')})"
+                         for p in t.get("points", []))
+        lines.append(f"- [{t.get('metric','')}/{t.get('unit','')}] {pts} | 추세:{t.get('trend','')} {t.get('note','')}")
+    for c in recon.get("conflicts", [])[:10]:
+        lines.append(f"- [충돌:{c.get('kind','')}] {c.get('topic','')}: {c.get('description','')}")
+    for n in recon.get("cross_source_notes", [])[:6]:
+        lines.append(f"- [교차] {n}")
+    return "\n".join(lines) or "(없음)"
+
+
 def run(company: str, topic: str, issues: list[Issue], claims: list[Claim],
-        gaps: list[Gap], financials_md: str, model: str | None = None) -> dict:
+        gaps: list[Gap], financials_md: str, reconciliation: dict | None = None,
+        model: str | None = None) -> dict:
     usable = [c for c in claims if c.verification in ("verified", "weak")]
     issue_blob = "\n".join(f"- {i.issue_id}: {i.question} | 가설: {i.hypothesis}" for i in issues)
     claim_blob = "\n".join(
@@ -56,7 +76,7 @@ def run(company: str, topic: str, issues: list[Issue], claims: list[Claim],
         SYSTEM,
         USER_TMPL.format(company=company, topic=topic, issues=issue_blob,
                          claims=claim_blob or "(없음)", financials=financials_md or "(없음)",
-                         gaps=gap_blob or "(없음)"),
-        model=model or config.MODEL_SMART, max_tokens=6000,
+                         reconciliation=_recon_blob(reconciliation), gaps=gap_blob or "(없음)"),
+        model=model or config.MODEL_SMART, max_tokens=6500,
     )
     return data

@@ -1,0 +1,474 @@
+{
+  "diag": {
+    "ready": true,
+    "queries": [
+      {
+        "q": "한화오션 수주잔고 2026",
+        "n": 30,
+        "error": null
+      },
+      {
+        "q": "한화오션 신규수주 둔화",
+        "n": 30,
+        "error": null
+      }
+    ],
+    "errors": [],
+    "raw_count": 60,
+    "kept_count": 30,
+    "bodies_fetched": 6
+  },
+  "items": [
+    {
+      "title": "'60조 대박' 환호 뒤의 비상등…獨 TKMS, 캐나다 수주에 숨은 복병",
+      "description": "시장 전문가들은 이 긴 협상 교착 기간 동안 세계 최고 수준의 납기 보장 능력을 갖춘 한국의 한화오션이... 다가올 2026년 3분기 실적 발표에서 TKMS가 수주 잔고를 실제 매출로 전환하는 능력을 증명하지 못한다면...",
+      "link": "https://www.g-enews.com/view.php?ud=202607130630183605e8b8a793f7_1",
+      "original_link": "https://www.g-enews.com/view.php?ud=202607130630183605e8b8a793f7_1",
+      "pub_date": "2026-07-12",
+      "query": "한화오션 수주잔고 2026",
+      "matched_terms": [
+        "수주",
+        "수주잔고",
+        "실적",
+        "매출"
+      ],
+      "body": "",
+      "body_source": "snippet"
+    },
+    {
+      "title": "'60조 캐나다 잭팟' 계약서 안 찍혔다…獨 TKMS 주가 급락",
+      "description": "올해(2026년) 말까지 법적 구속력이 있는 최종 본계약서에 서명하기를 강력히 원하고 있다. 반면 마크... 한국의 한화오션(Hanwha Ocean)으로 기수를 돌릴 수 있는 선택지를 쥐고 있다는 점에 주목하고 있다. 수주 잔고 50...",
+      "link": "https://www.g-enews.com/view.php?ud=20260712062824336e8b8a793f7_1",
+      "original_link": "https://www.g-enews.com/view.php?ud=20260712062824336e8b8a793f7_1",
+      "pub_date": "2026-07-11",
+      "query": "한화오션 수주잔고 2026",
+      "matched_terms": [
+        "수주",
+        "수주잔고"
+      ],
+      "body": "",
+      "body_source": "snippet"
+    },
+    {
+      "title": "[성공예감] ‘잠수함 수주 탈락’보다 조선주는 이걸 봐야 합니다 – 엄...",
+      "description": "현대중공업과 한화오션 같은 경우는 국내에서 원래 기존에도 군함과 전투함을 만들고 있었던 상황이었기... 됐었는데 수주 잔고를 이미 200유로 정도 가지고 있었던 상황이었습니다. 10년 치잖아요. 근데 이걸 받아서...",
+      "link": "https://n.news.naver.com/mnews/article/056/0012215721?sid=101",
+      "original_link": "https://news.kbs.co.kr/news/pc/view/view.do?ncd=8607640&ref=A",
+      "pub_date": "2026-07-10",
+      "query": "한화오션 수주잔고 2026",
+      "matched_terms": [
+        "수주",
+        "수주잔고",
+        "잠수함"
+      ],
+      "body": "[기사 본문은 저작권 보호를 위해 공개 저장소에서 제외 — url의 원문 참조]",
+      "body_source": "naver_article"
+    },
+    {
+      "title": "최창규, AI 투자 축소 공포 일축 \"삼전닉스, 피크아웃 아냐…조·방·원...",
+      "description": "봅시다] □ 방송일시 : 2026년 07월 09일 (목) □ 진행 : 김우성 PD □ 전화 : 최창규 미래에셋 본부장 * 아래... 한화오션의 캐나다 CPSP 수주 실패로 인해서 급락세를 연출하긴 했지만 그것을 제외하고도 충분히 수주 잔고...",
+      "link": "https://n.news.naver.com/mnews/article/052/0002376837?sid=101",
+      "original_link": "https://www.ytn.co.kr/_ln/0102_202607090733341348",
+      "pub_date": "2026-07-08",
+      "query": "한화오션 수주잔고 2026",
+      "matched_terms": [
+        "수주",
+        "수주잔고"
+      ],
+      "body": "[기사 본문은 저작권 보호를 위해 공개 저장소에서 제외 — url의 원문 참조]",
+      "body_source": "naver_article"
+    },
+    {
+      "title": "목표가 낮췄지만 \"지금 살 때\"…SK증권이 찍은 한화엔진의 반전 카드",
+      "description": "이에 따른 엔진 수주잔고는 약 5조3000억원으로, 올해 예상 연매출의 약 2.5배 수준이다. SK증권은... 최근 한화오션의 캐나다 잠수함 사업(CPSP) 수주 실패에 따른 주가 조정에 대해서는 과도한 반응이라는 평가를...",
+      "link": "https://www.megaeconomy.co.kr/news/newsview.php?ncode=1065574884373255",
+      "original_link": "https://www.megaeconomy.co.kr/news/newsview.php?ncode=1065574884373255",
+      "pub_date": "2026-07-08",
+      "query": "한화오션 수주잔고 2026",
+      "matched_terms": [
+        "수주",
+        "수주잔고",
+        "매출",
+        "잠수함"
+      ],
+      "body": "",
+      "body_source": "snippet"
+    },
+    {
+      "title": "[Who Is ?] 정기선 HD현대 대표이사 회장",
+      "description": "HD현대중공업은 2026년 6월11일 KDDX 사업 상세설계·선도함 건조 사업에서 한화오션에 수주를 내줬다. 결국... 연간 수주는 42억7400만 달러, 기말 수주잔고는 67억3100만 달러로 집계됐다. HD현대일렉트릭은 2026년 경영...",
+      "link": "https://www.businesspost.co.kr/BP?command=article_view&num=441351",
+      "original_link": "https://www.businesspost.co.kr/BP?command=article_view&num=441351",
+      "pub_date": "2026-07-07",
+      "query": "한화오션 수주잔고 2026",
+      "matched_terms": [
+        "수주",
+        "수주잔고"
+      ],
+      "body": "",
+      "body_source": "snippet"
+    },
+    {
+      "title": "7월 2주 주요 제조업 전망",
+      "description": "원)에 수주함. 2029년 12월까지 인도 예정 - 한화오션은 팬오션에 암모니아 레디 VLCC(초대형 원유 운반선)... 김영건 미래에셋증권 연구원은 \"설비 투자보다 중요한 건 수주 잔고의 방향\"이라며 \"현재 글로벌 빅테크의...",
+      "link": "https://www.laborplus.co.kr/news/articleView.html?idxno=41097",
+      "original_link": "https://www.laborplus.co.kr/news/articleView.html?idxno=41097",
+      "pub_date": "2026-07-07",
+      "query": "한화오션 수주잔고 2026",
+      "matched_terms": [
+        "수주",
+        "수주잔고"
+      ],
+      "body": "",
+      "body_source": "snippet"
+    },
+    {
+      "title": "K조선 상반기 글로벌 선박 수주 점유율 19% '제자리 걸음', 중국 72%로 16...",
+      "description": "3척, 한화오션은 초대형 원유운반선(VLCC) 4척, 삼성중공업이 △LNG운반선 1척을 각각 수주했다. 중국... 5월말 기준 국가별 수주잔고를 보면 한국이 3881만CGT(점유율 19%), 중국이 1억3403만CG(점유율 65%)다. 신조...",
+      "link": "https://www.businesspost.co.kr/BP?command=article_view&num=441604",
+      "original_link": "https://www.businesspost.co.kr/BP?command=article_view&num=441604",
+      "pub_date": "2026-07-06",
+      "query": "한화오션 수주잔고 2026",
+      "matched_terms": [
+        "수주",
+        "수주잔고",
+        "LNG"
+      ],
+      "body": "",
+      "body_source": "snippet"
+    },
+    {
+      "title": "한화오션, 7.8조 KDDX 우협 선정…‘보안 감점’이 가른 2년의 수주전",
+      "description": "이에 따라 감점 적용 시한은 2026년 12월까지 연장됐고, KDDX 제안서 평가 또한 그 유효 기간 안에 놓이게... 한화오션은 올해 1분기 연결 기준 매출 3조2099억원, 영업이익 4411억원을 기록했다. 지난 3월 말 수주잔고는...",
+      "link": "https://www.ceoscoredaily.com/page/view/2026070211313234141",
+      "original_link": "https://www.ceoscoredaily.com/page/view/2026070211313234141",
+      "pub_date": "2026-07-02",
+      "query": "한화오션 수주잔고 2026",
+      "matched_terms": [
+        "수주",
+        "수주잔고",
+        "영업이익",
+        "매출"
+      ],
+      "body": "",
+      "body_source": "snippet"
+    },
+    {
+      "title": "\"캐나다가 끝이 아니다\"···K잠수함, 다음 시장은 어디?",
+      "description": "독일 TKMS는 지난 5월, 2025/2026회계연도 상반기 실적 발표에서 수주잔고가 사상 처음으로 200억유로를 넘어선... 캐나다는 최대 12척 규모의 차세대 잠수함 도입을 추진 중이며, 한화오션과 독일 TKMS가 최종 경쟁을 벌이고...",
+      "link": "http://www.enewstoday.co.kr/news/articleView.html?idxno=2444830",
+      "original_link": "http://www.enewstoday.co.kr/news/articleView.html?idxno=2444830",
+      "pub_date": "2026-07-02",
+      "query": "한화오션 수주잔고 2026",
+      "matched_terms": [
+        "수주",
+        "수주잔고",
+        "실적",
+        "잠수함"
+      ],
+      "body": "",
+      "body_source": "snippet"
+    },
+    {
+      "title": "달러 패권 흔들리자 한국 기업 실적표도 흔들린다",
+      "description": "WGC는 2026년 중앙은행 금 보유 조사에서 응답자의 74%가 향후 5년간 글로벌 외환보유액 내 달러 비중이... HD현대중공업, 삼성중공업, 한화오션처럼 대형 수주잔고를 가진 기업은 달러 방향보다 환헤지 정책의 적정성이...",
+      "link": "https://sateconomy.co.kr/news/view/1065591151605003",
+      "original_link": "https://sateconomy.co.kr/news/view/1065591151605003",
+      "pub_date": "2026-06-30",
+      "query": "한화오션 수주잔고 2026",
+      "matched_terms": [
+        "수주",
+        "수주잔고",
+        "실적"
+      ],
+      "body": "",
+      "body_source": "snippet"
+    },
+    {
+      "title": "[전략지도②] 코스닥 축포… 외인, 한국 아닌 'AI 과잉' 팔고 있다",
+      "description": "그러나 2026년 시장은 다른 질문을 던지기 시작했다. AI 투자가 얼마나 커질 것이냐가 아니라, 그 투자를 누가... 한화오션과 HD현대중공업은 수주잔고 숫자보다 수익성, 인도 일정, 함정 정비망과 생애주기 사업 능력을...",
+      "link": "http://www.newsroad.co.kr/news/articleView.html?idxno=60965",
+      "original_link": "http://www.newsroad.co.kr/news/articleView.html?idxno=60965",
+      "pub_date": "2026-06-29",
+      "query": "한화오션 수주잔고 2026",
+      "matched_terms": [
+        "수주",
+        "수주잔고"
+      ],
+      "body": "",
+      "body_source": "snippet"
+    },
+    {
+      "title": "손재일 입건·출국금지로 각자대표 역할 부각...김동관, 사우디 MNG 수주...",
+      "description": "올해 2월 WDS 2026에는 한화에어로스페이스, 한화시스템, 한화오션이 함께 참가했다.MNG 사업은 K9 자주포와... 있다.한화에어로스페이스의 올 1분기 지상방산 수주잔고는 39조7천억원이다. 역대 최대 규모다. 회사는...",
+      "link": "https://www.insight.co.kr/news/560061",
+      "original_link": "https://www.insight.co.kr/news/560061",
+      "pub_date": "2026-06-25",
+      "query": "한화오션 수주잔고 2026",
+      "matched_terms": [
+        "수주",
+        "수주잔고",
+        "방산"
+      ],
+      "body": "",
+      "body_source": "snippet"
+    },
+    {
+      "title": "폭발사고 후 혼자 뛰는 한화 김동관···20조 사우디 방산 수주 시험대",
+      "description": "한화에어로스페이스의 올 1분기 지상방산 수주잔고는 역대 최고치인 39조7,000억 원으로 회사측은 2030년까지... 한화에어로스페이스는 올 2월 WDS2026에도 한화시스템, 한화오션과 함께 참가했다. 사우디는 석유 의존도를...",
+      "link": "https://www.globale.co.kr/news/articleView.html?idxno=38926",
+      "original_link": "https://www.globale.co.kr/news/articleView.html?idxno=38926",
+      "pub_date": "2026-06-24",
+      "query": "한화오션 수주잔고 2026",
+      "matched_terms": [
+        "수주",
+        "수주잔고",
+        "방산"
+      ],
+      "body": "",
+      "body_source": "snippet"
+    },
+    {
+      "title": "6월 4주 주요 제조업 전망",
+      "description": "삼성중공업, 한화오션, HD현대삼호 등 국내 조선4사의 사내협력회사협의회 회장단과 '조선해양산업 RISE... 그러면서 \"수년 뒤 공급 물량까지 선제적으로 계약하는 사례가 늘고 있다\"며 \"현재 수주 잔고는 7조 원을...",
+      "link": "https://www.laborplus.co.kr/news/articleView.html?idxno=41026",
+      "original_link": "https://www.laborplus.co.kr/news/articleView.html?idxno=41026",
+      "pub_date": "2026-06-23",
+      "query": "한화오션 수주잔고 2026",
+      "matched_terms": [
+        "수주",
+        "수주잔고"
+      ],
+      "body": "",
+      "body_source": "snippet"
+    },
+    {
+      "title": "조선업계 빅3, 역대급 초호황으로 향후 3~4년치 일감 챙겨놔",
+      "description": "무엇보다 한화오션은 30년간 MRO 등 60조원대 캐나다 잠수함사업(CPSP) 수주전에 총력을 기울이고 있다. 이를 위해 캐나다 현지에서 열린 방산전시회 CANSEC 2026를 포함해 활발한 마케팅을 펼쳤다. 아울러 필리조선소...",
+      "link": "https://www.womentimes.co.kr/news/articleView.html?idxno=103799",
+      "original_link": "https://www.womentimes.co.kr/news/articleView.html?idxno=103799",
+      "pub_date": "2026-06-22",
+      "query": "한화오션 수주잔고 2026",
+      "matched_terms": [
+        "수주",
+        "방산",
+        "MRO",
+        "필리조선소",
+        "잠수함"
+      ],
+      "body": "",
+      "body_source": "snippet"
+    },
+    {
+      "title": "한화에어로, 韓방산기업 최초 S&P 신용등급 'A-' 획득",
+      "description": "수주 잔고(2025년 말 기준 약 37조원)는 매출 성장과 수익성 개선이 이어질 것으로 분석됐다. 김철홍 한화에... 한화에어로스페이스가 보유한 한화오션[042660] 사업의 경기 민감성, 향후 대규모 투자 전망 등은 위험...",
+      "link": "https://news.einfomax.co.kr/news/articleView.html?idxno=4421205",
+      "original_link": "https://news.einfomax.co.kr/news/articleView.html?idxno=4421205",
+      "pub_date": "2026-06-22",
+      "query": "한화오션 수주잔고 2026",
+      "matched_terms": [
+        "수주",
+        "수주잔고",
+        "방산",
+        "매출"
+      ],
+      "body": "",
+      "body_source": "snippet"
+    },
+    {
+      "title": "한화에어로, S&P 'A-' 획득…김철홍 CFO \"방산·우주·항공 글로벌 경쟁...",
+      "description": "폴란드에서는 2026년부터 K9 현지 생산이 추진되는 등 '생산 현지화' 단계로 진입하고 있다. S&P는... 한화오션 등을 포함한 연결 기준 수주잔고는 100조원을 웃돌아 향후 수년치 일감을 미리 확보한 상태다. 실적도...",
+      "link": "https://n.news.naver.com/mnews/article/014/0005537904?sid=101",
+      "original_link": "http://www.fnnews.com/news/202606221034011527",
+      "pub_date": "2026-06-22",
+      "query": "한화오션 수주잔고 2026",
+      "matched_terms": [
+        "수주",
+        "수주잔고",
+        "방산",
+        "실적"
+      ],
+      "body": "[기사 본문은 저작권 보호를 위해 공개 저장소에서 제외 — url의 원문 참조]",
+      "body_source": "naver_article"
+    },
+    {
+      "title": "[N2 포커스] \"일감 넘치는데 사람이 없다\"…조선업계, 인력난 왜?",
+      "description": "[그래픽=챗GPT] 21일 업계에 따르면 HD현대중공업, 한화오션, 삼성중공업 등 조선 3사는 액화천연가스(LNG) 운반선과 친환경 선박을 중심으로 안정적인 수주 잔고를 확보하고 있다. 글로벌 환경규제 강화와 에너지 운송...",
+      "link": "https://www.news2day.co.kr/article/20260619500023",
+      "original_link": "https://www.news2day.co.kr/article/20260619500023",
+      "pub_date": "2026-06-21",
+      "query": "한화오션 수주잔고 2026",
+      "matched_terms": [
+        "수주",
+        "수주잔고",
+        "LNG"
+      ],
+      "body": "",
+      "body_source": "snippet"
+    },
+    {
+      "title": "[창간기획⑧-한화오션]한화오션, 조선 호황에 돛 올렸다…방산·에너지...",
+      "description": "지난 3월 말 기준 한화오션의 수주잔고는 348억6000만달러, 약 48조원 규모다. 이 가운데 상선 부문이... 클락슨리서치도 2026~2027년 글로벌 FPSO(부유식 원유 생산·저장·하역설비) 신조 발주가 총 18건에 이를 것으로...",
+      "link": "http://www.metroseoul.co.kr/article/20260621500274",
+      "original_link": "http://www.metroseoul.co.kr/article/20260621500274",
+      "pub_date": "2026-06-21",
+      "query": "한화오션 수주잔고 2026",
+      "matched_terms": [
+        "수주",
+        "수주잔고",
+        "방산"
+      ],
+      "body": "",
+      "body_source": "snippet"
+    },
+    {
+      "title": "[뉴스락 특별기획∣K-산업 실적 기상도 ㊤] 잘되는 곳, 버티는 곳, 무너...",
+      "description": "방산업계도 누적된 수주잔고를 실적으로 증명하며 뚜렷한 상승 기류를 타고 있다. 한화에어로스페이스... HD한국조선해양·한화오션·삼성중공업 등 조선 3사는 올해 1분기 합산 영업이익 2조원을 돌파했다. 척당...",
+      "link": "http://www.newslock.co.kr/news/articleView.html?idxno=131613",
+      "original_link": "http://www.newslock.co.kr/news/articleView.html?idxno=131613",
+      "pub_date": "2026-06-20",
+      "query": "한화오션 수주잔고 2026",
+      "matched_terms": [
+        "수주",
+        "수주잔고",
+        "방산",
+        "실적",
+        "영업이익"
+      ],
+      "body": "",
+      "body_source": "snippet"
+    },
+    {
+      "title": "[K-TECH 글로벌 리더스] 〈한화②〉 LNG선부터 차세대 이지스함·잠수함...",
+      "description": "한화오션은 올해 1분기 LNG운반선 4척, 초대형 원유운반선(VLCC) 7척, 해상풍력발전기 설치선(WTIV) 1척 등 총 12척, 24억5000만 달러 규모의 신규 수주를 확보했습니다. 2026년 3월 말 기준 수주잔고도 35조4000억 원 수준으로, 약...",
+      "link": "https://n.news.naver.com/mnews/article/020/0003728028?sid=101",
+      "original_link": "https://www.donga.com/news/article/all/20260619/134143766/1",
+      "pub_date": "2026-06-19",
+      "query": "한화오션 수주잔고 2026",
+      "matched_terms": [
+        "수주",
+        "수주잔고",
+        "LNG",
+        "잠수함"
+      ],
+      "body": "[기사 본문은 저작권 보호를 위해 공개 저장소에서 제외 — url의 원문 참조]",
+      "body_source": "naver_article"
+    },
+    {
+      "title": "애물단지서 'AI 시대 구원투수'로… 삼성중공업, 해양 플랜트로 판도 바...",
+      "description": "60~70척 수준의 LNG 캐리어 물량을 확보해 매출의 절반 이상을 고마진으로 채울 것으로 내다보고 있다. 국내 조선 빅3 중에서도 삼성중공업이 가진 차별적 정체성은 뚜렷하다. 경쟁사인 HD현대중공업과 한화오션이 해양...",
+      "link": "https://www.mhns.co.kr/news/articleView.html?idxno=750806",
+      "original_link": "https://www.mhns.co.kr/news/articleView.html?idxno=750806",
+      "pub_date": "2026-06-19",
+      "query": "한화오션 수주잔고 2026",
+      "matched_terms": [
+        "LNG",
+        "매출"
+      ],
+      "body": "",
+      "body_source": "snippet"
+    },
+    {
+      "title": "한화그룹 부회장 김동관의 혜안과 뚝심 : 필리조선소 인수 후 2년 승부수...",
+      "description": "인수 금액은 1억 달러(약 1380억 원)였으며 지분은 한화시스템이 60%, 한화오션이 40%로 나눠 가졌다. 이번... 연구원의 한화시스템 분석 보고서에 따르면 2026년 6월11일 기준 16척의 수주 잔고를 보유하고 있으며 1분기...",
+      "link": "https://www.huffingtonpost.kr/article/258072",
+      "original_link": "https://www.huffingtonpost.kr/article/258072",
+      "pub_date": "2026-06-19",
+      "query": "한화오션 수주잔고 2026",
+      "matched_terms": [
+        "수주",
+        "수주잔고",
+        "필리조선소"
+      ],
+      "body": "",
+      "body_source": "snippet"
+    },
+    {
+      "title": "[단독] 美상원, 한국 조선소에 비전투함 열고도 대통령 예외권 삭제",
+      "description": "OMB 관계자는 한화오션, HD현대중공업, 삼성중공업과 일본 미쓰비시중공업, 가와사키중공업, JMU 등을 직접... 조선소의 수주 잔고가 이미 넘친다는 보고서를 근거로 제시했다. 같은 청문회에서 애리조나주의 마크 켈리...",
+      "link": "https://n.news.naver.com/mnews/article/119/0003102316?sid=101",
+      "original_link": "https://www.dailian.co.kr/news/view/1657305/?sc=Naver",
+      "pub_date": "2026-06-18",
+      "query": "한화오션 수주잔고 2026",
+      "matched_terms": [
+        "수주",
+        "수주잔고"
+      ],
+      "body": "[기사 본문은 저작권 보호를 위해 공개 저장소에서 제외 — url의 원문 참조]",
+      "body_source": "naver_article"
+    },
+    {
+      "title": "'수직계열화 공세' 맞선 STX엔진···해경선 독점 성벽 굳힐까",
+      "description": "HD현대와 한화오션 등 조선 대기업들의 '엔진 수직계열화' 공세가 거세지는 가운데, 우리나라 해군 군함과... K-방산 수출과 조선업 호황에 힘입어 올해 상반기 기준 3조원 규모의 수주 잔고를 확보한 상태다. 역대 최고...",
+      "link": "https://www.newsfreezone.co.kr/news/articleView.html?idxno=695078",
+      "original_link": "https://www.newsfreezone.co.kr/news/articleView.html?idxno=695078",
+      "pub_date": "2026-06-18",
+      "query": "한화오션 수주잔고 2026",
+      "matched_terms": [
+        "수주",
+        "수주잔고",
+        "방산"
+      ],
+      "body": "",
+      "body_source": "snippet"
+    },
+    {
+      "title": "지상·바다·우주 이어 하늘까지…한화, 방산 밸류체인 시동",
+      "description": "한화에어로스페이스는 K9 자주포와 천무 등 지상무기, 항공엔진, 우주발사체를 갖추고 있고, 한화오션은... 한화가 공중 플랫폼에 주목하는 이유로 꼽힌다. KAI는 2025년 말 기준 27조원대 수주잔고를 확보했고, 2026년...",
+      "link": "https://www.newsway.co.kr/news/view?ud=2026061713373033156",
+      "original_link": "https://www.newsway.co.kr/news/view?ud=2026061713373033156",
+      "pub_date": "2026-06-17",
+      "query": "한화오션 수주잔고 2026",
+      "matched_terms": [
+        "수주",
+        "수주잔고",
+        "방산"
+      ],
+      "body": "",
+      "body_source": "snippet"
+    },
+    {
+      "title": "[종목분석] 한화오션 주가, 상선이 벌고 특수선이 값을 정한다",
+      "description": "1분기 특수선이 208억원의 영업손실을 기록한 것도 신규 수주 지연과 낮은 가동률의 영향을 받았다. ○ 향후 관전 포인트는 주가보다 수주 가정의 확인이다 한화오션 목표주가 4만원 차이는 증권사들의 상선 실적...",
+      "link": "https://www.topstarnews.net/news/articleView.html?idxno=16130898",
+      "original_link": "https://www.topstarnews.net/news/articleView.html?idxno=16130898",
+      "pub_date": "2026-07-10",
+      "query": "한화오션 신규수주 둔화",
+      "matched_terms": [
+        "수주",
+        "특수선",
+        "실적"
+      ],
+      "body": "",
+      "body_source": "snippet"
+    },
+    {
+      "title": "캐나다 잠수함 불발에 조선주 '눈높이' 낮췄다…NH證, 목표가 줄하향",
+      "description": "상승 둔화가 겹치면서 목표주가를 잇달아 낮추는 분위기지만, 하반기 해양플랜트와 특수선 신규 수주가 주가 반등의 분수령이 될 것이라는 전망도 나온다. NH투자증권은 10일 HD현대중공업과 삼성중공업, 한화오션...",
+      "link": "http://www.newsian.co.kr/news/articleView.html?idxno=92072",
+      "original_link": "http://www.newsian.co.kr/news/articleView.html?idxno=92072",
+      "pub_date": "2026-07-10",
+      "query": "한화오션 신규수주 둔화",
+      "matched_terms": [
+        "수주",
+        "특수선",
+        "잠수함"
+      ],
+      "body": "",
+      "body_source": "snippet"
+    },
+    {
+      "title": "“삼성전자 담고, SK하이닉스 던졌다”…‘상위 1%’ 주식 초고수들 선...",
+      "description": "올해 신규 수주도 지난해를 크게 웃돌 것”으로 내다봤다. 삼성SDI도 순매수 상위권에 올랐다. 삼성SDI는... 이날 오전 기준 순매도 상위 종목에는 SK하이닉스를 비롯해 삼성전기, 한화오션이 이름을 올렸다. 전 거래일...",
+      "link": "https://n.news.naver.com/mnews/article/016/0002667638?sid=101",
+      "original_link": "https://biz.heraldcorp.com/article/10802612?ref=naver",
+      "pub_date": "2026-07-08",
+      "query": "한화오션 신규수주 둔화",
+      "matched_terms": [
+        "수주"
+      ],
+      "body": "[기사 본문은 저작권 보호를 위해 공개 저장소에서 제외 — url의 원문 참조]",
+      "body_source": "naver_article"
+    }
+  ]
+}

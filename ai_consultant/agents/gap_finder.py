@@ -41,10 +41,19 @@ def run(issues: list[Issue], claims: list[Claim], model: str | None = None) -> l
     data = call_json(
         SYSTEM,
         USER_TMPL.format(issues=issue_blob, coverage="\n".join(coverage_lines), claim_list=claim_list),
-        model=model or config.MODEL_FAST, max_tokens=2500,
+        model=model or config.MODEL_FAST, max_tokens=3000,
     )
+    # 모델이 배열만 반환하거나 다른 키로 반환하는 경우를 정규화
+    if isinstance(data, list):
+        data = {"gaps": data}
+    raw = data.get("gaps")
+    if not raw:
+        for alt in ("evidence_gaps", "claims", "items", "results"):
+            if isinstance(data.get(alt), list) and data[alt]:
+                raw = data[alt]
+                break
     gaps = []
-    for j, g in enumerate(data.get("gaps", []), 1):
+    for j, g in enumerate(raw or [], 1):
         gaps.append(Gap(
             gap_id=f"G{j}", issue_id=g.get("issue_id", "I0"),
             description=g.get("description", "").strip(),

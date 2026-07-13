@@ -16,7 +16,7 @@ from .schemas import SourceDoc, Claim, to_jsonable
 from .sources.dart import DartClient, find_passages
 from .sources.naver_news import NaverNewsClient, collect_news
 from .agents import (issue_planner, source_scout, evidence_extractor,
-                     claim_normalizer, verifier, gap_finder, synthesis, critic)
+                     claim_normalizer, verifier, reconciler, gap_finder, synthesis, critic)
 from . import report
 
 
@@ -24,9 +24,11 @@ from . import report
 class RunConfig:
     company: str
     topic: str
-    bgn: str = "20230101"
-    end: str = "20251231"
-    fin_year: str = "2024"
+    bgn: str = "20240101"
+    end: str = "20261231"          # 2026년 최신 정기보고서까지 포함
+    fin_year: str = "2025"          # (fallback) 실제로는 최신 연간보고서에서 자동 도출
+    dart_reports: int = 2           # 최신 정기보고서 몇 개(시점)를 쓸지
+    today: str = ""                 # 정합 기준 '오늘'(빈 값이면 실행시각으로 채움)
     max_news: int = config.MAX_NEWS_ITEMS
     dart_passage_per_kw: int = 1
     max_extract_workers: int = 6
@@ -39,8 +41,10 @@ def _run_id(company: str) -> str:
     return f"{slug}_{ts}"
 
 
-def run(cfg: RunConfig, out_base: str = "outputs") -> dict:
-    art = RunArtifacts(out_base, _run_id(cfg.company))
+def run(cfg: RunConfig, out_base: str = "outputs", run_id: str | None = None) -> dict:
+    if not cfg.today:
+        cfg.today = datetime.now(timezone.utc).strftime("%Y-%m-%d")
+    art = RunArtifacts(out_base, run_id or _run_id(cfg.company))
     art.log(f"RUN start · {cfg.company} · {cfg.topic}")
     art.write_json("00_request.json", {"company": cfg.company, "topic": cfg.topic,
                                         "period": [cfg.bgn, cfg.end], "fin_year": cfg.fin_year})
@@ -65,37 +69,45 @@ def run(cfg: RunConfig, out_base: str = "outputs") -> dict:
     fin_md, fin_struct = "(정형 재무 없음)", []
     dart_limit = ""
     if corp:
-        acc = dart.key_accounts(corp, cfg.fin_year)
-        fin_md, fin_struct = fin.summarize(acc)
-        art.write_json("03a_financials.json", {"corp_code": corp, "rows": acc, "structured": fin_struct})
-        biz = dart.latest_business_report(corp, cfg.bgn, cfg.end)
+        # 최신 정기보고서 k개(서로 다른 시점) → 시점 흐름을 위한 다중 타임포인트
+        reports = dart.latest_periodic_reports(corp, cfg.bgn, cfg.end, k=cfg.dart_reports)
         supplies = dart.supply_contracts(corp, cfg.bgn, cfg.end)
         art.write_json("03b_filings.json", {
-            "business_report": to_jsonable(biz) if biz else None,
+            "reports": [to_jsonable(r) for r in reports],
             "supply_contracts": [to_jsonable(s) for s in supplies],
         })
-        if biz:
-            doc = dart.document_text(biz.rcept_no)
-            art.log(f"DART 원문 확보: {biz.report_nm} ({len(doc):,}자)")
+        # 재무(정형): 연간 보고서 우선(YoY 비교 가능), 없으면 최신 보고서
+        annual = next((r for r in reports if "사업보고서" in r.report_nm), reports[0] if reports else None)
+        if annual:
+            yr, rc = annual.fin_params
+            acc = dart.key_accounts(corp, yr, rc)
+            fin_md, fin_struct = fin.summarize(acc)
+            art.write_json("03a_financials.json", {"corp_code": corp, "as_of": annual.as_of_iso,
+                                                    "report": annual.report_nm, "rows": acc,
+                                                    "structured": fin_struct})
+        # 비정형 원문: 각 보고서에서 앵커 발췌 (source_date = 보고 기준일 = 데이터 시점)
+        for rep in reports:
+            doc = dart.document_text(rep.rcept_no)
+            art.log(f"DART 원문: {rep.report_nm} as_of={rep.as_of_iso} ({len(doc):,}자)")
             passages = find_passages(doc, scout["dart_keywords"], max_per_kw=cfg.dart_passage_per_kw)
             for k, p in enumerate(passages):
                 sources.append(SourceDoc(
-                    source_id=f"DART_{biz.rcept_no}_{k}",
-                    source_type="DART", source_name=f"{cfg.company} {biz.report_nm}",
-                    source_date=biz.date_iso, url=biz.url, text=p["text"],
-                    meta={"keyword": p["keyword"], "offset": p["offset"], "rcept_no": biz.rcept_no},
+                    source_id=f"DART_{rep.rcept_no}_{k}",
+                    source_type="DART", source_name=f"{cfg.company} {rep.report_nm}",
+                    source_date=rep.as_of_iso, url=rep.url, text=p["text"],
+                    meta={"keyword": p["keyword"], "offset": p["offset"], "rcept_no": rep.rcept_no,
+                          "period": rep.period, "as_of": rep.as_of_iso},
                 ))
-            # supply-contract events as a compact source (from disclosure titles/dates)
-            if supplies:
-                sc_text = "단일판매·공급계약 공시 목록:\n" + "\n".join(
-                    f"- {s.rcept_dt[:4]}-{s.rcept_dt[4:6]}-{s.rcept_dt[6:8]} {s.report_nm}" for s in supplies[:20])
-                sources.append(SourceDoc(
-                    source_id=f"DART_SUPPLY_{biz.rcept_no}", source_type="DART",
-                    source_name=f"{cfg.company} 단일판매·공급계약 공시목록", source_date=biz.date_iso,
-                    url="https://dart.fss.or.kr", text=sc_text,
-                    meta={"count": len(supplies)}))
-        else:
-            dart_limit = "기간 내 사업보고서 미발견"
+        # 단일판매·공급계약 이벤트 (공시 제목/날짜)
+        if reports and supplies:
+            sc_text = "단일판매·공급계약 공시 목록:\n" + "\n".join(
+                f"- {s.rcept_dt[:4]}-{s.rcept_dt[4:6]}-{s.rcept_dt[6:8]} {s.report_nm}" for s in supplies[:20])
+            sources.append(SourceDoc(
+                source_id="DART_SUPPLY", source_type="DART",
+                source_name=f"{cfg.company} 단일판매·공급계약 공시목록", source_date=reports[0].as_of_iso,
+                url="https://dart.fss.or.kr", text=sc_text, meta={"count": len(supplies)}))
+        if not reports:
+            dart_limit = "기간 내 정기보고서 미발견"
     else:
         dart_limit = f"corp_code 미해결({cfg.company})"
 
@@ -171,39 +183,48 @@ def run(cfg: RunConfig, out_base: str = "outputs") -> dict:
     art.stage("Verifier", f"verified {n_ver} · weak {n_weak} · unsupported {n_unsup}",
               "span 실재성은 결정적, 과장/비약 판정은 LLM 의존(경계사례 흔들림 가능)")
 
-    # ---------- 7) Gap Finder ----------
+    # ---------- 7) Reconciler (교차소스 정합: 의미중복 병합 + 시점 타임라인 + 충돌) ----------
+    recon = reconciler.run(cfg.company, verified, today=cfg.today)
+    art.write_json("07_reconciliation.json", recon)
+    art.stage("Reconciler", f"timeline {len(recon['timelines'])} · 충돌 {len(recon['conflicts'])} · "
+              f"교차노트 {len(recon['cross_source_notes'])}",
+              "의미적 그룹핑/충돌은 LLM 판단(임베딩 아님); 근거 시점(as_of)에 의존")
+
+    # ---------- 8) Gap Finder ----------
     gaps = gap_finder.run(issues, verified)
-    art.write_json("07_gaps.json", gaps)
+    art.write_json("08_gaps.json", gaps)
     art.stage("Gap Finder", f"evidence gap {len(gaps)}건 + next check",
               "gap은 확보된 claim 기준 상대적 판단(모르는 미지의 미지는 못 잡음)")
 
-    # ---------- 8) Synthesis ----------
-    synth = synthesis.run(cfg.company, cfg.topic, issues, verified, gaps, fin_md)
-    art.write_json("08_synthesis.json", synth)
-    art.stage("Synthesis", "fact pack 초안(7개 섹션) 생성",
+    # ---------- 9) Synthesis ----------
+    synth = synthesis.run(cfg.company, cfg.topic, issues, verified, gaps, fin_md, recon)
+    art.write_json("09_synthesis.json", synth)
+    art.stage("Synthesis", "fact pack 초안(8개 섹션, 시점·소스 정합 포함) 생성",
               "unsupported 제외 후 종합; verified가 적으면 outlook이 얇아짐")
 
-    # ---------- 9) Critic ----------
+    # ---------- 10) Critic ----------
     stats = {"verified": n_ver, "weak": n_weak, "unsupported": n_unsup,
              "total": len(verified), "sources": len(sources),
-             "dart_sources": n_dart, "news_sources": n_news}
-    draft_md = report.render_markdown(cfg.company, cfg.topic, synth, {}, stats, fin_md)
+             "dart_sources": n_dart, "news_sources": n_news,
+             "timelines": len(recon["timelines"]), "conflicts": len(recon["conflicts"])}
+    draft_md = report.render_markdown(cfg.company, cfg.topic, synth, {}, stats, fin_md, recon)
     crit = critic.run(draft_md, n_ver, n_weak, n_unsup)
-    art.write_json("09_critic.json", crit)
+    art.write_json("10_critic.json", crit)
     art.stage("Critic", f"지적 {len(crit.get('issues_found',[]))}건 + 총평",
               "자기비평이라 자체 편향 공유 가능(외부 검토 대체 아님)")
 
     # ---------- Final render ----------
-    final_md = report.render_markdown(cfg.company, cfg.topic, synth, crit, stats, fin_md)
+    final_md = report.render_markdown(cfg.company, cfg.topic, synth, crit, stats, fin_md, recon)
     art.write_text("fact_pack.md", final_md)
     art.write_text("fact_pack.html", report.markdown_to_html(final_md, f"{cfg.company} Fact Pack"))
     art.stage("Report", "fact_pack.md / fact_pack.html 렌더", "")
 
     art.finalize_run_log({
         "회사": cfg.company, "주제": cfg.topic, "corp_code": corp,
-        "기간": f"{cfg.bgn}~{cfg.end}", "재무연도": cfg.fin_year,
+        "기간": f"{cfg.bgn}~{cfg.end}", "오늘": cfg.today,
         "소스": f"{len(sources)}건 (DART {n_dart}/News {n_news})",
         "claim": f"raw {len(raw_claims)} → norm {len(norm_claims)} → verified {n_ver}/weak {n_weak}/unsup {n_unsup}",
+        "정합": f"timeline {len(recon['timelines'])} · 충돌 {len(recon['conflicts'])}",
         "모델": f"fast={config.MODEL_FAST}, smart={config.MODEL_SMART}",
         "뉴스활성": news_diag.get("ready"),
     })

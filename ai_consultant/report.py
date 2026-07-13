@@ -5,7 +5,7 @@ from datetime import datetime, timezone
 
 
 def render_markdown(company: str, topic: str, synth: dict, critic: dict,
-                    stats: dict, financials_md: str) -> str:
+                    stats: dict, financials_md: str, recon: dict | None = None) -> str:
     now = datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M UTC")
     parts = [
         f"# {company} — {topic} · 1차 Fact Pack",
@@ -13,7 +13,8 @@ def render_markdown(company: str, topic: str, synth: dict, critic: dict,
         "",
         f"> 근거 통계: verified **{stats.get('verified',0)}** · weak {stats.get('weak',0)} · "
         f"unsupported(제외) {stats.get('unsupported',0)} · 총 claim {stats.get('total',0)} · "
-        f"소스 {stats.get('sources',0)}건 (DART {stats.get('dart_sources',0)} / News {stats.get('news_sources',0)})",
+        f"소스 {stats.get('sources',0)}건 (DART {stats.get('dart_sources',0)} / News {stats.get('news_sources',0)}) · "
+        f"시점 timeline {stats.get('timelines',0)} · 소스충돌 {stats.get('conflicts',0)}",
         "",
         "## 1. Executive Summary",
         synth.get("executive_summary", "_(없음)_"),
@@ -21,28 +22,51 @@ def render_markdown(company: str, topic: str, synth: dict, critic: dict,
         "## 2. Issue Tree",
         synth.get("issue_tree_md", "_(없음)_"),
         "",
-        "## 3. Evidence Table",
+        "## 3. 시점·소스 정합 (Timeline & Conflicts)",
+        synth.get("timeline_md", "_(없음)_"),
+        "",
+        _recon_detail_md(recon),
+        "## 4. Evidence Table",
         synth.get("evidence_table_md", "_(없음)_"),
         "",
-        "## 4. 핵심 재무 (정형 · DART 주요계정)",
+        "## 5. 핵심 재무 (정형 · DART 주요계정)",
         financials_md or "_(없음)_",
         "",
-        "## 5. Order & Backlog",
+        "## 6. Order & Backlog",
         synth.get("order_backlog_md", "_(없음)_"),
         "",
-        "## 6. Strategic Outlook",
+        "## 7. Strategic Outlook",
         synth.get("strategic_outlook_md", "_(없음)_"),
         "",
-        "## 7. Risks & Open Questions",
+        "## 8. Risks & Open Questions",
         synth.get("risks_open_questions_md", "_(없음)_"),
         "",
-        "## 8. Next Research Agenda",
+        "## 9. Next Research Agenda",
         synth.get("next_research_agenda_md", "_(없음)_"),
         "",
-        "## 9. Critic Review (self-critique)",
+        "## 10. Critic Review (self-critique)",
         _critic_md(critic),
     ]
     return "\n".join(parts)
+
+
+def _recon_detail_md(recon: dict | None) -> str:
+    """소스 충돌·교차노트를 표로 (synthesis의 timeline_md를 보강)."""
+    if not recon:
+        return ""
+    out = []
+    conflicts = recon.get("conflicts", [])
+    if conflicts:
+        out += ["**소스 간 충돌 / 시점 차이**", "", "| 종류 | 주제 | 내용 |", "|---|---|---|"]
+        for c in conflicts[:12]:
+            out.append(f"| {c.get('kind','')} | {c.get('topic','')} | {c.get('description','')} |")
+        out.append("")
+    notes = recon.get("cross_source_notes", [])
+    if notes:
+        out.append("**교차 소스 노트** (공시↔뉴스 상호보강/공백)")
+        out += [f"- {n}" for n in notes[:6]]
+        out.append("")
+    return "\n".join(out)
 
 
 def _critic_md(critic: dict) -> str:

@@ -3,7 +3,10 @@ __pycache__/
 .env
 .venv/
 .DS_Store
-# Keep the curated demo run under outputs/, but ignore scratch logs and the large DART cache
+# Only the curated demo run (outputs/demo/) is committed.
+# Ignore scratch logs, the large DART cache, and ad-hoc timestamped runs.
 outputs/_scratch/
 outputs/_cache/
+outputs/*_20*        # timestamped runs (한화오션_20260713_...)
 *.log
+!outputs/demo/

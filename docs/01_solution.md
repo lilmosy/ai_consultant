@@ -13,8 +13,12 @@
 4. **Evidence Extractor** (sonnet) — 원문에서만 atomic claim 추출, `source_span` 필수.
 5. **Claim Normalizer** (결정적) — enum 표준화 + 중복 병합.
 6. **Verifier** (sonnet) — `source_span`이 원문에 실재하는지 **결정적 차단** 후, 과장/비약을 LLM 판정.
-7. **Gap Finder** (sonnet) — 근거 공백/빈 비교축 + next check.
-8. **Synthesis** (opus) — verified/weak만으로 fact pack 7섹션. → **Critic** (opus) 자기비평.
+7. **Reconciler** (opus) — 교차소스 정합: 같은 지표를 **의미적으로 그룹핑**하고 **시점축 timeline**으로 정렬,
+   값이 어긋나면 `값충돌`/`시점차이`/`공시vs뉴스`로 표면화. (Normalizer의 결정적 중복제거가 놓치는 부분.)
+8. **Gap Finder** (sonnet) — 근거 공백/빈 비교축 + next check.
+9. **Synthesis** (opus) — verified/weak + timeline으로 fact pack 10섹션. → **Critic** (opus) 자기비평.
+
+DART는 **가장 최신 정기보고서 2개(예: 사업 2025.12 + 분기 2026.03)** 를 함께 읽어 "지금 흐름"을 본다.
 
 ## 왜 이게 나은가 (검증 대상 가설)
 - **Citation**: 모든 claim에 source_span → 시니어 재검증 비용↓.

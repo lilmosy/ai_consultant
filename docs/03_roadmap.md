@@ -10,11 +10,16 @@
 - [x] fact_pack.md / fact_pack.html 렌더
 - [x] 한화오션 end-to-end 런 성공 (DART+뉴스, verified 220+ claim)
 
+## v0.3 추가 (시점 정합)
+- [x] DART **최신 정기보고서 2시점**(분기+사업) 동시 사용 → 수주잔고 시계열(2025-12 → 2026-03)
+- [x] `document.xml` **다중 XML 병합** 버그 수정(연간보고서 본문 누락 해결)
+- [x] **Reconciler**: 의미적 그룹핑 + 시점 timeline + `값충돌`/`시점차이`/`공시vs뉴스` 표면화
+- [x] 출력 전략: 커밋은 `outputs/demo/` 하나만, 타임스탬프 런은 gitignore
+
 ## 다음 (Loop 1)
 - [ ] 외부 매체 본문 파싱 품질 개선(readability류) — 현재 네이버 기사만 안정적
+- [ ] Reconciler를 **임베딩 기반 후보군 + LLM 판정** 2단계로(정밀도↑)
 - [ ] Gap Finder → Source Scout **재수집 루프** 실제 연결(현재 1-pass)
-- [ ] 분기·반기 보고서까지 확장(수주잔고 시계열)
-- [ ] 공시(fact) vs 뉴스(기대/전망) **명시적 충돌 표면화** 섹션 강화
 
 ## 그다음 (Loop 2)
 - [ ] 경쟁사(HD현대중공업 00164742 / 삼성중공업) 동일 파이프라인 → **경쟁사 비교 fact pack** (가이드 시나리오 3)

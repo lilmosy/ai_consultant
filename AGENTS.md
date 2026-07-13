@@ -20,9 +20,14 @@
 | Evidence Extractor | `agents/evidence_extractor.py` | source text → raw claims | fast | source_span 필수, 원문 밖 생성 금지 |
 | Claim Normalizer | `agents/claim_normalizer.py` | raw claims → normalized | (없음) | 결정적 enum 매핑 + 중복 병합 |
 | Verifier | `agents/verifier.py` | claim + source → verdict | fast | span 실재성 결정적 차단 후 LLM 판정 |
+| Reconciler | `agents/reconciler.py` | verified claims → timeline+충돌 | smart | 의미적 그룹핑·시점정렬·충돌표시(근거 숫자만) |
 | Gap Finder | `agents/gap_finder.py` | issues + claims → gaps | fast | 확보 claim 기준 상대 판단 |
-| Synthesis | `agents/synthesis.py` | verified claims + gaps → fact pack | smart | unsupported 제외, claim 밖 수치 금지 |
+| Synthesis | `agents/synthesis.py` | verified + timeline + gaps → fact pack | smart | unsupported 제외, claim 밖 수치 금지 |
 | Critic | `agents/critic.py` | draft → 지적/개선 | smart | 과장·비약·누락 지적 |
+
+> **Normalizer(결정적) vs Reconciler(LLM)**: Normalizer는 같은 소스의 거의 동일 텍스트만 병합한다.
+> 소스·시점이 다른 "같은 사실"의 정합(의미 판단)은 Reconciler가 맡아 시점 timeline을 만들고
+> `값충돌`/`시점차이`/`공시vs뉴스` 충돌을 표면화한다.
 
 ## 데이터 모델 (`ai_consultant/schemas.py`)
 
