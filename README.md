@@ -1,11 +1,16 @@
 # Evidence-grounded Multi-agent Research Assistant
 
 컨설팅형 기업 리서치를 위한 **근거 기반 멀티에이전트 리서치 어시스턴트**.
-교수님 인턴 프로젝트 가이드(`consulting_research_agent_intern_guide.html`)의 8-에이전트 워크플로우를
-DART OpenAPI(정형+비정형)와 네이버 뉴스 API 위에 그대로 구현한 **동작하는 데모**입니다.
+연구실 인턴 과제 가이드의 8-에이전트 워크플로를 바탕으로, DART OpenAPI(정형+비정형)와
+네이버 뉴스 API 위에 직접 설계·구현한 **동작하는 데모**입니다.
 
 > 목표는 "그럴듯한 요약"이 아니라, 시니어가 바로 리뷰할 수 있는 **fact pack** —
 > 각 주장(claim)이 출처·근거 문구(source_span)·검증상태를 달고 있는 1차 리서치 산출물.
+
+![개요: 요청과 공개 소스 → 역할을 나눈 근거 파이프라인 → 검토용 fact pack](docs/overview.png)
+
+> 데모 실행(한화오션) 기준: 소스 75건(DART 45 · 뉴스 30) → 주장 421개 → verified 388 · weak 11 · unsupported 22(종합에서 제외) → 시점 timeline 12 · 충돌 후보 10.
+> 뉴스 기사 본문은 저작권 보호를 위해 공개 저장소의 `outputs/`에서 제외했습니다(제목·링크·API 요약만 남김).
 
 ---
 
